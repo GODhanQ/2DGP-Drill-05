@@ -1,4 +1,5 @@
 from pico2d import *
+from sprite_info import Sprite
 
 # §상하좌우 방향키이를 이용해서 캐릭터를 상하좌우로 이동.
 # §IDLE 애니메이션 있어야 함.
@@ -11,6 +12,8 @@ open_canvas(Window_width, Window_height)
 
 tuk_ground = load_image('TUK_GROUND.png')
 character = load_image('animation_sheet.png')
+
+
 
 running = True
 
