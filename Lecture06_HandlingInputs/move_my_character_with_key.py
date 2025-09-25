@@ -1,6 +1,7 @@
 from pico2d import *
 from sprite_info import Sprite
 
+# Drill #05 제출 - 2024180014 민현규
 # §상하좌우 방향키이를 이용해서 캐릭터를 상하좌우로 이동.
 # §IDLE 애니메이션 있어야 함.
 # §배경 : TUK_GROUND.png 사용
