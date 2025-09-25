@@ -13,8 +13,6 @@ open_canvas(Window_width, Window_height)
 tuk_ground = load_image('TUK_GROUND.png')
 character = load_image('animation_sheet.png')
 
-
-
 running = True
 
 def event_handler():
@@ -26,16 +24,19 @@ def event_handler():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
 
+frame = 0
 while True:
     clear_canvas()
     tuk_ground.draw(Window_width // 2, Window_height // 2)
-    character.draw(Window_width, Window_height)
+    character.clip_draw(Sprite[frame][0], Sprite[frame][1], Sprite[frame][2], Sprite[frame][3], Window_width // 2, Window_height // 2)
     update_canvas()
 
     event_handler()
     if not running:
         break
 
+    frame = (frame + 1) % 8
+    delay(0.1)
     pass
 
 close_canvas()
