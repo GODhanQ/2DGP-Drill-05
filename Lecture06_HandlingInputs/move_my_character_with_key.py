@@ -13,6 +13,10 @@ tuk_ground = load_image('TUK_GROUND.png')
 character = load_image('animation_sheet.png')
 
 while True:
+    clear_canvas()
+    tuk_ground.draw(Window_width // 2, Window_height // 2)
+    character.draw(Window_width, Window_height)
+    update_canvas()
     pass
 
 close_canvas()
