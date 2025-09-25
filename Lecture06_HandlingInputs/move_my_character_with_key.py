@@ -46,23 +46,39 @@ def event_handler():
                 left_move = True
                 mov_vec[0] = -1
             elif event.key == SDLK_UP:
+                # 위로 이동할 때도 뛰는 애니메이션 적용
+                if WhichAction == RIGHT_IDLE:
+                    WhichAction = RIGHT_RUN
                 mov_vec[1] = 1
             elif event.key == SDLK_DOWN:
+                # 아래로 이동할 때도 뛰는 애니메이션 적용
+                if WhichAction == RIGHT_IDLE:
+                    WhichAction = RIGHT_RUN
                 mov_vec[1] = -1
         elif event.type == SDL_KEYUP:
             if event.key == SDLK_RIGHT:
-                WhichAction = RIGHT_IDLE
+                # 다른 방향키가 눌려있는지 확인
+                if mov_vec[1] == 0:  # 상하 이동이 없으면 IDLE로
+                    WhichAction = RIGHT_IDLE
                 right_move = True
                 left_move = False
                 mov_vec[0] = 0
             elif event.key == SDLK_LEFT:
-                WhichAction = RIGHT_IDLE
+                # 다른 방향키가 눌려있는지 확인
+                if mov_vec[1] == 0:  # 상하 이동이 없으면 IDLE로
+                    WhichAction = RIGHT_IDLE
                 right_move = False
                 left_move = True
                 mov_vec[0] = 0
             elif event.key == SDLK_UP:
+                # 다른 방향키가 눌려있는지 확인
+                if mov_vec[0] == 0:  # 좌우 이동이 없으면 IDLE로
+                    WhichAction = RIGHT_IDLE
                 mov_vec[1] = 0
             elif event.key == SDLK_DOWN:
+                # 다른 방향키가 눌려있는지 확인
+                if mov_vec[0] == 0:  # 좌우 이동이 없으면 IDLE로
+                    WhichAction = RIGHT_IDLE
                 mov_vec[1] = 0
 
 def Draw_character():
@@ -80,6 +96,7 @@ def Draw_character():
         # 우측 이동 또는 기본 상태
         character.clip_draw(left, bottom, width, height, x, y)
 
+move_amount = 10
 frame = 0
 while running:
     clear_canvas()
@@ -92,8 +109,8 @@ while running:
         break
 
     # 이동 처리 (벡터의 각 요소에 속도를 곱함)
-    new_x = x + mov_vec[0] * 5
-    new_y = y + mov_vec[1] * 5
+    new_x = x + mov_vec[0] * move_amount
+    new_y = y + mov_vec[1] * move_amount
 
     # 경계 체크
     if 0 <= new_x <= Window_width:
