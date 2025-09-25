@@ -14,29 +14,94 @@ tuk_ground = load_image('TUK_GROUND.png')
 character = load_image('animation_sheet.png')
 
 running = True
+mov_vec = [0, 0]
+
+RIGHT_IDLE = 0
+LEFT_IDLE = 1
+RIGHT_RUN = 2
+LEFT_RUN = 3
+WhichAction = RIGHT_IDLE
+
+right_move, left_move = False, False
+x = Window_width // 2
+y = Window_height // 2
 
 def event_handler():
-    global running
+    global running, WhichAction, mov_vec, right_move, left_move
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
             running = False
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            running = False
+        elif event.type == SDL_KEYDOWN:
+            if event.key == SDLK_ESCAPE:
+                running = False
+            elif event.key == SDLK_RIGHT:
+                WhichAction = RIGHT_RUN
+                right_move = True
+                left_move = False
+                mov_vec[0] = 1
+            elif event.key == SDLK_LEFT:
+                WhichAction = RIGHT_RUN  # 같은 애니메이션을 좌우 반전해서 사용
+                right_move = False
+                left_move = True
+                mov_vec[0] = -1
+            elif event.key == SDLK_UP:
+                mov_vec[1] = 1
+            elif event.key == SDLK_DOWN:
+                mov_vec[1] = -1
+        elif event.type == SDL_KEYUP:
+            if event.key == SDLK_RIGHT:
+                WhichAction = RIGHT_IDLE
+                right_move = True
+                left_move = False
+                mov_vec[0] = 0
+            elif event.key == SDLK_LEFT:
+                WhichAction = RIGHT_IDLE
+                right_move = False
+                left_move = True
+                mov_vec[0] = 0
+            elif event.key == SDLK_UP:
+                mov_vec[1] = 0
+            elif event.key == SDLK_DOWN:
+                mov_vec[1] = 0
+
+def Draw_character():
+    global frame
+    left, bottom, width, height = Sprite[WhichAction][frame]
+
+    if left_move:
+        # 좌측 이동 시 이미지를 좌우 반전
+        character.clip_composite_draw(
+            left, bottom, width, height,
+            0, 'h',  # 'h'는 수평 반전
+            x, y, width, height
+        )
+    else:
+        # 우측 이동 또는 기본 상태
+        character.clip_draw(left, bottom, width, height, x, y)
 
 frame = 0
-while True:
+while running:
     clear_canvas()
     tuk_ground.draw(Window_width // 2, Window_height // 2)
-    character.clip_draw(Sprite[frame][0], Sprite[frame][1], Sprite[frame][2], Sprite[frame][3], Window_width // 2, Window_height // 2)
+    Draw_character()
     update_canvas()
 
     event_handler()
     if not running:
         break
 
+    # 이동 처리 (벡터의 각 요소에 속도를 곱함)
+    new_x = x + mov_vec[0] * 5
+    new_y = y + mov_vec[1] * 5
+
+    # 경계 체크
+    if 0 <= new_x <= Window_width:
+        x = new_x
+    if 0 <= new_y <= Window_height:
+        y = new_y
+
     frame = (frame + 1) % 8
     delay(0.1)
-    pass
 
 close_canvas()
